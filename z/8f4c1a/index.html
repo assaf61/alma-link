@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>האורג</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#F7F6F4;color:#2A2826;font-family:Arial,Helvetica,sans-serif;line-height:1.7;
+     display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.card{max-width:420px}
+h1{font-size:1.5rem;font-weight:700;color:#0F0F0E;margin-bottom:10px}
+p{font-size:1rem;color:#5A5754}
+.dots::after{content:"";display:inline-block;width:1em;text-align:right;animation:d 1.2s steps(4,end) infinite}
+@keyframes d{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+a{color:#4A7860}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <h1>האורג</h1>
+  <p id="msg" class="dots">רגע</p>
+</div>
+<script>
+(async function(){
+  const msg = document.getElementById("msg");
+  function off(){
+    msg.className = "";
+    msg.textContent = "האורג נח כרגע. הדף הזה יוביל אליו כשהוא יידלק.";
+  }
+  try {
+    const r = await fetch("status.json?t=" + Date.now(), {cache: "no-store"});
+    if (!r.ok) return off();
+    const s = await r.json();
+    if (!s.url) return off();
+    if (s.until && Date.now() > Date.parse(s.until)) return off();
+    msg.className = "";
+    msg.textContent = "פותח...";
+    location.replace(s.url);
+  } catch(e){ off(); }
+})();
+</script>
+</body>
+</html>
